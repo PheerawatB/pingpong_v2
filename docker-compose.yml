@@ -1,0 +1,25 @@
+version: '3.8'
+
+networks:
+  go-routine-network:
+    name: go-routine-network
+    driver: bridge
+
+services:
+  player-service:
+    build:
+      context: ./player-service
+      dockerfile: dockerfile
+    ports:
+      - "8888:8888"  # Correct mapping for player-service
+    networks:
+      - go-routine-network
+
+  table-service:
+    build:
+      context: ./table-service
+      dockerfile: dockerfile
+    ports:
+      - "8889:8889"  # Correct mapping for table-service
+    networks:
+      - go-routine-network
