@@ -1,6 +1,6 @@
 # Dockerfile for player-service
 FROM golang:1.23-alpine AS builder
-WORKDIR /src/player-service/app
+WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
@@ -8,7 +8,7 @@ RUN go build -o player-service main.go
 
 FROM alpine:latest
 WORKDIR /src/player-service/app
-COPY --from=builder /src/player-service/app/player-service .
+COPY --from=builder /app/player-service .
 EXPOSE 8888  
 
 CMD ["./player-service"]

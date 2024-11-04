@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: table-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: table-service
+  template:
+    metadata:
+      labels:
+        app: table-service
+    spec:
+      containers:
+      - name: table-service
+        image: fxank/table-service:latest
+        ports:
+        - containerPort: 8889
