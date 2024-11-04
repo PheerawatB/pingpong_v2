@@ -11,7 +11,7 @@ services:
       context: ./player-service
       dockerfile: dockerfile
     ports:
-      - "8888:8888"  # Correct mapping for player-service
+      - "8888:8888"  
     networks:
       - go-routine-network
 
@@ -20,6 +20,6 @@ services:
       context: ./table-service
       dockerfile: dockerfile
     ports:
-      - "8889:8889"  # Correct mapping for table-service
+      - "8889:8889" 
     networks:
       - go-routine-network

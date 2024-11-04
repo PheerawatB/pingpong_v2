@@ -10,6 +10,5 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/table-service .
 EXPOSE 8889  
-# Expose port 8889
 
 CMD ["./table-service"]
