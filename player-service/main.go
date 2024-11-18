@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"player-service/server"
 
@@ -16,7 +17,6 @@ var mongoClient *mongo.Client
 
 func main() {
 	var err error
-	// MongoDB connection
 	mongoURI := "mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=5000"
 	mongoClient, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoURI))
 	if err != nil {
@@ -24,11 +24,10 @@ func main() {
 		return
 	}
 	defer mongoClient.Disconnect(context.TODO())
-	server.CountMatch, _ = server.GetLastMatchID(mongoClient) // Get last match id
+	server.CountMatch, _ = server.GetLastMatchID(mongoClient)
 
 	app := fiber.New()
 
-	// Define routes for the Player service
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Player Service")
 	})
@@ -44,7 +43,21 @@ func main() {
 		return c.JSON(listMatch)
 	})
 
-	// Listen on port 8888
+	app.Get("/match/:id", func(c *fiber.Ctx) error {
+		idStr := c.Params("id")
+		id, err := strconv.ParseUint(idStr, 10, 32)
+		if err != nil {
+			return fiber.NewError(fiber.StatusBadRequest, "Invalid match ID")
+		}
+
+		res, err := server.GetMatchID(mongoClient, uint(id))
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Failed to get match data")
+		}
+
+		return c.JSON(res)
+	})
+
 	if err := app.Listen(":8888"); err != nil {
 		fmt.Println("Failed to start Player Service:", err)
 	}

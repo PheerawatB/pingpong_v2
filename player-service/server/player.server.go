@@ -33,7 +33,7 @@ func NewMatch() string {
 
 	ach := make(chan uint)
 	bch := make(chan uint)
-	done := make(chan string) // Channel to signal the end of the match
+	done := make(chan string)
 
 	// Start the game
 	go func() {
@@ -42,15 +42,14 @@ func NewMatch() string {
 	}()
 
 	closeCh := false
-	// Main game loop
 	go func() {
 		for {
 			if closeCh {
-				break // Game over, exit the loop
+				break
 			}
 
 			select {
-			case power, ok := <-ach: // Player A's turn
+			case power, ok := <-ach:
 				turnOfMatch += 1
 				if !ok {
 					closeCh = true
@@ -59,12 +58,12 @@ func NewMatch() string {
 				go func() {
 					time.Sleep(1 * time.Second)
 					if !Player(power, bch, "Player A", "Player B") {
-						done <- "Player A" // Player B wins
-						return             // Exit the goroutine
+						done <- "Player A"
+						return
 					}
 				}()
 
-			case power, ok := <-bch: // Player B's turn
+			case power, ok := <-bch:
 				turnOfMatch += 1
 				if !ok {
 					closeCh = true
@@ -73,18 +72,15 @@ func NewMatch() string {
 				go func() {
 					time.Sleep(1 * time.Second)
 					if !Player(power, ach, "Player B", "Player A") {
-						done <- "Player B" // Player A wins
-						return             // Exit the goroutine
+						done <- "Player B"
+						return
 					}
 				}()
 			}
 		}
 	}()
-
-	// Block until
 	winner := <-done
 
-	// Close channels
 	close(ach)
 	close(bch)
 	LogToCSV(fmt.Sprintf("[Alert] %s wins!", winner))
@@ -140,12 +136,10 @@ func LogToCSV(message string) {
 		return
 	}
 
-	// Create the log file name with the match name and current date
 	date := time.Now().Format("20060102_15")
 	logFileName := fmt.Sprintf("%s_%s.csv", "match", date)
 	logFilePath := filepath.Join(logDir, logFileName)
 
-	// Open or create the CSV file for appending
 	file, err := os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Println("Error opening/creating CSV file:", err)
@@ -153,18 +147,15 @@ func LogToCSV(message string) {
 	}
 	defer file.Close()
 
-	// Create a CSV writer
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	// Write the log message and timestamp to the CSV file
 	record := []string{
-		time.Now().Format(time.RFC3339), // Timestamp
-		message,                         // Log message
+		time.Now().Format(time.RFC3339),
+		message,
 	}
 	LogMatch += time.Now().Format(time.RFC3339) + ":" + message + "\n"
 
-	// Write the record to the CSV
 	err = writer.Write(record)
 	if err != nil {
 		fmt.Println("Error writing to CSV file:", err)
@@ -186,6 +177,21 @@ func LogMatchResultToMongoDB(matchID uint, logMatch string, mongoClient *mongo.C
 	}
 }
 
+func GetMatchID(mongoClient *mongo.Client, id uint) (MatchLog, error) {
+	collection := mongoClient.Database("match_results").Collection("results")
+
+	var match MatchLog
+	err := collection.FindOne(
+		context.TODO(),
+		bson.D{{Key: "match_id", Value: id}},
+	).Decode(&match)
+	if err != nil {
+		return MatchLog{}, err
+	}
+
+	return match, nil
+}
+
 func GetLastMatchID(mongoClient *mongo.Client) (uint, error) {
 	collection := mongoClient.Database("match_results").Collection("results")
 
@@ -204,18 +210,14 @@ func GetLastMatchID(mongoClient *mongo.Client) (uint, error) {
 
 func GetAllMatches(mongoClient *mongo.Client) ([]MatchLog, error) {
 	collection := mongoClient.Database("match_results").Collection("results")
-
-	// Create a slice to hold the match logs
 	var matches []MatchLog
 
-	// Find all documents in the collection
 	cursor, err := collection.Find(context.TODO(), bson.D{})
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(context.TODO())
 
-	// Iterate through the cursor and decode each match log into the slice
 	for cursor.Next(context.TODO()) {
 		var match MatchLog
 		if err := cursor.Decode(&match); err != nil {
@@ -224,7 +226,6 @@ func GetAllMatches(mongoClient *mongo.Client) ([]MatchLog, error) {
 		matches = append(matches, match)
 	}
 
-	// Check for errors that may have occurred during iteration
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}

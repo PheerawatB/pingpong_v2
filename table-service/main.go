@@ -30,7 +30,6 @@ func main() {
 		return c.SendString(fmt.Sprintf("%d", lowPower))
 	})
 
-	// Listen on port 8889
 	if err := app.Listen(":8889"); err != nil {
 		fmt.Println("Failed to start Table Service:", err)
 	}
