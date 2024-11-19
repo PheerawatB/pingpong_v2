@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-player-service
+  labels:
+    app: player-service
+spec:
+  replicas: {{ .Values.playerService.replicas }}
+  selector:
+    matchLabels:
+      app: player-service
+  template:
+    metadata:
+      labels:
+        app: player-service
+    spec:
+      containers:
+      - name: player-service
+        image: "{{ .Values.playerService.image.repository }}:{{ .Values.playerService.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.playerService.port }}

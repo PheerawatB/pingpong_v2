@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-table-service
+  labels:
+    app: table-service
+spec:
+  replicas: {{ .Values.tableService.replicas }}
+  selector:
+    matchLabels:
+      app: table-service
+  template:
+    metadata:
+      labels:
+        app: table-service
+    spec:
+      containers:
+      - name: table-service
+        image: "{{ .Values.tableService.image.repository }}:{{ .Values.tableService.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.tableService.port }}
