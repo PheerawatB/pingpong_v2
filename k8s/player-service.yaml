@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: player-service
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: player-service
@@ -17,3 +17,23 @@ spec:
         image: fxank/player-service:latest
         ports:
         - containerPort: 8888
+        env:
+            - name: MONGO_URI
+              value: "mongodb://root:example@mongodb:27017/mydb?authSource=admin"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: player-service
+spec:
+  selector:
+    app: player-service
+  ports:
+  - protocol: TCP
+    port: 8888
+    targetPort: 8888
+  type: ClusterIP
+
+
+
