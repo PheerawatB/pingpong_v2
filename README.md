@@ -16,3 +16,9 @@ kubectl port-forward service/table-service 8889:8889
 # For test 
 curl http://localhost:8889
 curl http://localhost:8888
+
+# MongoDB
+show dbs
+use match_results
+show collections
+db.results.find().pretty()

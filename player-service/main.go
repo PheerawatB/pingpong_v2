@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
 	"strconv"
 
 	"player-service/server"
@@ -17,13 +19,24 @@ var mongoClient *mongo.Client
 
 func main() {
 	var err error
-	mongoURI := "mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=5000"
+	mongoURI := os.Getenv("MONGO_URI")
+	if mongoURI == "" {
+		log.Fatal("Mongo URI is not set in environment variables")
+	}
+
 	mongoClient, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoURI))
 	if err != nil {
 		fmt.Println("Error connecting to MongoDB:", err)
 		return
 	}
 	defer mongoClient.Disconnect(context.TODO())
+
+	err = mongoClient.Ping(context.TODO(), nil)
+	if err != nil {
+		fmt.Println("Error pinging MongoDB:", err)
+		return
+	}
+
 	server.CountMatch, _ = server.GetLastMatchID(mongoClient)
 
 	app := fiber.New()

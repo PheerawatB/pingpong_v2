@@ -14,6 +14,10 @@ services:
       - "8888:8888"  
     networks:
       - go-routine-network
+    depends_on:
+      - mongoDB
+    environment:
+      MONGO_URI: mongodb://root:example@mongoDB:27017/mydb?authSource=admin
 
   table-service:
     build:
@@ -23,3 +27,20 @@ services:
       - "8889:8889" 
     networks:
       - go-routine-network
+
+  mongoDB:
+    image: mongo:latest
+    container_name: mongoDB
+    ports:
+      - "27017:27017"
+    networks:
+      - go-routine-network
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+volumes:
+  mongo_data:
+    driver: local
