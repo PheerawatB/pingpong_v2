@@ -1,0 +1,7 @@
+resources:
+  - deployment-player-service.yaml
+  - deployment-table-service.yaml
+  - deployment-mongodb.yaml
+  - service-player-service.yaml
+  - service-table-service.yaml
+  - service-mongodb.yaml

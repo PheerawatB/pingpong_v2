@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-player-service
+  name: player-service
   labels:
     app: player-service
 spec:
-  replicas: {{ .Values.playerService.replicas }}
+  replicas: 1
   selector:
     matchLabels:
       app: player-service
@@ -16,6 +16,9 @@ spec:
     spec:
       containers:
       - name: player-service
-        image: "{{ .Values.playerService.image.repository }}:{{ .Values.playerService.image.tag }}"
+        image: fxank/player-service:latest
         ports:
-        - containerPort: {{ .Values.playerService.port }}
+        - containerPort: 8888
+        env:
+        - name: MONGO_URI
+          value: mongodb://root:example@mongodb:27017/mydb?authSource=admin

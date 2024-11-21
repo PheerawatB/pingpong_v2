@@ -1,18 +1,16 @@
-# values.yaml
-
-# Global network details (not directly needed in Kubernetes)
-network: go-routine-network
-
+mongodb:
+  image: "mongo:latest"
+  username: "root"
+  password: "example"
+  database: "mydb"
+  storage: 
+    size: "5Gi"
+  
 playerService:
-  replicas: 1
-  image:
-    repository: fxank/player-service
-    tag: latest
+  image: "fxank/player-service:latest"
   port: 8888
+  mongoUri: "mongodb://root:example@mongodb:27017/mydb?authSource=admin"
 
 tableService:
-  replicas: 1
-  image:
-    repository: fxank/table-service
-    tag: latest
+  image: "fxank/table-service:latest"
   port: 8889
