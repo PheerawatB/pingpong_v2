@@ -4,6 +4,7 @@ metadata:
   name: table-service
   labels:
     app: table-service
+    
 spec:
   replicas: 1
   selector:

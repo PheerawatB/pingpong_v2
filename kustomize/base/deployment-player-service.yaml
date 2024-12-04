@@ -17,9 +17,8 @@ spec:
           image: fxank/player-service:latest
           env:
             - name: MONGO_URI
-              value: mongodb://root:example@localhost:27017/mydb?authSource=admin # MongoDB connection string
+              value: "mongodb://root:example@10.103.108.165:27017/mydb?authSource=admin"
+            - name: TABLE_URI
+              value : "table-service.default.svc.cluster.local:8889"
           ports:
             - containerPort: 8888
-
-
-

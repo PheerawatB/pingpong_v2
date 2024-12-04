@@ -90,7 +90,7 @@ func NewMatch() string {
 }
 
 func Player(power uint, wakeCh chan uint, name string, opponent string) bool {
-	url := fmt.Sprintf("http://table-service:8889/ping-power?power=%d&name=%s", power, name)
+	url := fmt.Sprintf("http://%s/ping-power?power=%d&name=%s", os.Getenv("TABLE_URI"), power, name)
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -155,7 +155,6 @@ func LogToCSV(message string) {
 		message,
 	}
 	LogMatch += time.Now().Format(time.RFC3339) + ":" + message + "\n"
-
 	err = writer.Write(record)
 	if err != nil {
 		fmt.Println("Error writing to CSV file:", err)
@@ -170,7 +169,6 @@ func LogMatchResultToMongoDB(matchID uint, logMatch string, mongoClient *mongo.C
 		MatchLog: logMatch,
 		Time:     time.Now(),
 	}
-
 	_, err := collection.InsertOne(context.TODO(), matchResult)
 	if err != nil {
 		fmt.Printf("Error inserting match result to MongoDB: %v", err)
@@ -207,7 +205,6 @@ func GetLastMatchID(mongoClient *mongo.Client) (uint, error) {
 	if err != nil {
 		return 0, err
 	}
-
 	return lastMatch.MatchID, nil
 }
 

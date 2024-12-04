@@ -4,8 +4,8 @@ metadata:
   name: table-service
 spec:
   selector:
-    app: table-service
+    app: table-service # Match the label in your Deployment
   ports:
-  - protocol: TCP
-    port: 8889
-    targetPort: 8889
+    - protocol: TCP
+      port: 8889
+      targetPort: 8889

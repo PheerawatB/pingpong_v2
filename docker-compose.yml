@@ -18,6 +18,7 @@ services:
       - mongoDB
     environment:
       MONGO_URI: mongodb://root:example@mongoDB:27017/mydb?authSource=admin
+      TABLE_URI: table-service:8889
 
   table-service:
     build:
