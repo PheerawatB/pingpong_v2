@@ -20,6 +20,7 @@ var mongoClient *mongo.Client
 func main() {
 	var err error
 	mongoURI := os.Getenv("MONGO_URI")
+	fmt.Println(mongoURI)
 	if mongoURI == "" {
 		log.Fatal("Mongo URI is not set in environment variables")
 	}
@@ -33,10 +34,10 @@ func main() {
 
 	err = mongoClient.Ping(context.TODO(), nil)
 	if err != nil {
-		fmt.Println("Error pinging MongoDB:", err)
-		return
+		log.Fatalf("Error pinging MongoDB: %v", err)
 	}
 
+	fmt.Println("Successfully connected to MongoDB")
 	server.CountMatch, _ = server.GetLastMatchID(mongoClient)
 
 	app := fiber.New()

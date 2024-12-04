@@ -19,7 +19,7 @@ spec:
         - containerPort: 8888
         env:
             - name: MONGO_URI
-              value: "mongodb://root:example@mongodb:27017/mydb?authSource=admin"
+              value: "mongodb://root:example@mongodb.default.svc.cluster.local:27017/mydb?authSource=admin"
 
 ---
 apiVersion: v1
@@ -34,6 +34,3 @@ spec:
     port: 8888
     targetPort: 8888
   type: ClusterIP
-
-
-

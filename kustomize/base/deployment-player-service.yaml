@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: player-service
-  labels:
-    app: player-service
 spec:
   replicas: 1
   selector:
@@ -15,10 +13,13 @@ spec:
         app: player-service
     spec:
       containers:
-      - name: player-service
-        image: fxank/player-service:latest
-        ports:
-        - containerPort: 8888
-        env:
-        - name: MONGO_URI
-          value: mongodb://root:example@mongodb:27017/mydb?authSource=admin
+        - name: player-service
+          image: fxank/player-service:latest
+          env:
+            - name: MONGO_URI
+              value: mongodb://root:example@localhost:27017/mydb?authSource=admin # MongoDB connection string
+          ports:
+            - containerPort: 8888
+
+
+

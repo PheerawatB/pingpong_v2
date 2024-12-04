@@ -173,8 +173,11 @@ func LogMatchResultToMongoDB(matchID uint, logMatch string, mongoClient *mongo.C
 
 	_, err := collection.InsertOne(context.TODO(), matchResult)
 	if err != nil {
-		fmt.Println("Error inserting match result to MongoDB:", err)
+		fmt.Printf("Error inserting match result to MongoDB: %v", err)
+	} else {
+		fmt.Println("Match result inserted successfully:", matchResult)
 	}
+
 }
 
 func GetMatchID(mongoClient *mongo.Client, id uint) (MatchLog, error) {

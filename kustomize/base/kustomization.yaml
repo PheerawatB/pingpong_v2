@@ -1,3 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Specify the resources to be included in the kustomization
 resources:
   - deployment-player-service.yaml
   - deployment-table-service.yaml
@@ -5,3 +9,18 @@ resources:
   - service-player-service.yaml
   - service-table-service.yaml
   - service-mongodb.yaml
+
+# Optionally, define common labels for all resources
+commonLabels:
+  app: go-routine
+
+# Optionally, patch images dynamically
+images:
+  - name: player-service
+    newTag: v2.0.0 # Update to your new image tag
+  - name: table-service
+    newTag: v2.0.0
+  - name: mongo
+    newTag: latest
+
+namespace: go-routine-v0.0.1

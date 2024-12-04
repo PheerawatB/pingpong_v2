@@ -30,13 +30,13 @@ spec:
       volumes:
         - name: mongo-data
           persistentVolumeClaim:
-            claimName: mongo-pvc1
+            claimName: mongo-pvc
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mongo-pvc1
+  name: mongo-pvc
 spec:
   accessModes:
     - ReadWriteOnce

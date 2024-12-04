@@ -1,16 +1,55 @@
-mongodb:
-  image: "mongo:latest"
-  username: "root"
-  password: "example"
-  database: "mydb"
-  storage: 
-    size: "5Gi"
   
 playerService:
   image: "fxank/player-service:latest"
   port: 8888
-  mongoUri: "mongodb://root:example@mongodb:27017/mydb?authSource=admin"
+  mongoUri: "mongodb+srv://dbadmin:rNJx70Je7Pz9E0YHFPmL3FLJrS5JQwHg@cluster0.mongodb.net/mydatabase?retryWrites=true&w=majority"
+
 
 tableService:
   image: "fxank/table-service:latest"
   port: 8889
+
+# Authentication settings
+auth:
+  enabled: false
+  rootUser: root
+  rootPassword: changeme
+  username: root
+  password: changeme
+  database: ryze
+
+# Persistent storage settings
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: ""
+
+# Disable replica set (for standalone mode)
+replicaSet:
+  enabled: false
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 27017
+
+image:
+  repository: arm64v8/mongo
+  tag: 6.0
+
+project: # Project custom values
+  atlasProjectName: "My Project"
+  projectIpAccessList:
+    - cidrBlock: "0.0.0.0/0"
+
+users: # Custom database users
+  - username: dbadmin
+    databaseName: admin
+    roles:
+      - databaseName: admin-role
+        roleName: dbAdmin
+  - username: dbuser
+    databaseName: admin
+    roles:
+      - databaseName: user-role
+        roleName: readWrite
